@@ -29,9 +29,14 @@ https://www.linode.com/docs/websites/apache/install-php-fpm-and-apache-on-debian
 Change in conf
     /etc/php/7.0/fpm/pool.d/www.conf
         listen = 127.0.0.1:9000
-    /etc/apache2/mods-enabled/fastcgi.conf
+    /etc/apache2/mods-enabled/fastcgi.conf (old version)
         ProxyPassMatch ^/(.*\.php)$ fcgi://127.0.0.1:9000/var/www/html/$1 (cf Set proxypassmatch link)
-        
+    OR use SetHandler "proxy:fcgi://127.0.0.1:9000" in /etc/apache2/conf-available/php7.0-fpm.conf    
+        <FilesMatch ".+\.ph(p[3457]?|t|tml)$">
+            #SetHandler "proxy:unix:/run/php/php7.0-fpm.sock|fcgi://localhost"
+            SetHandler "proxy:fcgi://127.0.0.1:9000"
+        </FilesMatch>    
+    
 Set proxypassmatch
     https://www.vincentliefooghe.net/content/configuration-apache-24-php-fpm
     
