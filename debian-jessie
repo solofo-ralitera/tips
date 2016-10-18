@@ -70,12 +70,31 @@ Mapserver http://mapserver.org/fr/installation/unix.html
     Postgres / postgis
         #apt-get install postgresql-9.4
         #apt-get install postgis
+        
     GDAL / OGR
-        compile     gdal-1.9.2.tar.gz
-            ./configure --with-ecw=yes --with-expat=/usr/lib --with-pg=/usr/bin/pg_config
-            make
-            
+        #apt-get install libtool
+        #apt-get install gdal-bin
+                ERREUR IF COMPILE
+                compile     gdal-1.9.2.tar.gz
+                    ./configure --with-ecw=yes --with-expat=/usr/lib --with-pg=/usr/bin/pg_config
+                    make   ...........................................................
+                        http://lists.osgeo.org/pipermail/ubuntu/2012-May/000568.html
+                        libtool: link: unable to infer tagged configuration
+                        libtool: link: specify a tag with `--tag'
+                        GNUmakefile:41: recipe for target 'libgdal.la' failed
+                        make[1]: *** [libgdal.la] Error 1
+                        make[1]: Leaving directory '/usr/local/src/gdal-1.9.2'
+                        GNUmakefile:50: recipe for target 'check-lib' failed
+                        make: *** [check-lib] Error 2 
     libproj
         #apt-get install libproj-dev
 
+    libxml
+        #apt-get install libxml2 libxml2-dev
+    Geos
+        #apt-get install bzip2
+        compile     geos-3.5.0.tar.bz2 (tar -xjf ....)
+        
+    libpq
+        #apt-get install libpq-dev
     
