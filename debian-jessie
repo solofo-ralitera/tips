@@ -49,6 +49,13 @@ Change in conf
             </FilesMatch>
         </Directory>    
     
+    To activate headers in apache conf (/etc/apache2/conf-available/php7.0-fpm.conf )
+        #a2enmod headers
+        Then in conf you can add, to enable cross origin for script for instance
+        <FilesMatch "\.(html|htm|js|css)$">
+            Header set Access-Control-Allow-Origin "*"
+        </FilesMatch>        
+
 Set proxypassmatch
     https://www.vincentliefooghe.net/content/configuration-apache-24-php-fpm
     
