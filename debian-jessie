@@ -5,9 +5,9 @@ Install php
 https://memo-linux.com/debian-8-installer-php7-simplement-avec-les-depots-dotdeb/    
 https://angristan.fr/installer-php-7-debian-8-jessie-depot-dotdeb/
 https://www.linode.com/docs/websites/apache/install-php-fpm-and-apache-on-debian-8
-    wget --no-check-certificate https://www.dotdeb.org/dotdeb.gpg && apt-key add dotdeb.gpg
-    apt update
-    apt install php7.0 php7.0-fpm php7.0-mysql php7.0-curl php7.0-json php7.0-gd php7.0-mcrypt php7.0-msgpack php7.0-memcached php7.0-intl php7.0-sqlite3 php7.0-gmp php7.0-geoip php7.0-mbstring php7.0-xml php7.0-zip php7.0-pgsql
+    #wget --no-check-certificate https://www.dotdeb.org/dotdeb.gpg && apt-key add dotdeb.gpg
+    #apt update
+    #apt install php7.0 php7.0-fpm php7.0-mysql php7.0-curl php7.0-json php7.0-gd php7.0-mcrypt php7.0-msgpack php7.0-memcached php7.0-intl php7.0-sqlite3 php7.0-gmp php7.0-geoip php7.0-mbstring php7.0-xml php7.0-zip php7.0-pgsql
             Creating config file /etc/php/7.0/mods-available/zip.ini with new version
             Traitement des actions différées (« triggers ») pour libc-bin (2.19-18+deb8u6) ...
             Traitement des actions différées (« triggers ») pour ca-certificates (20141019+deb8u1) ...
@@ -21,10 +21,10 @@ https://www.linode.com/docs/websites/apache/install-php-fpm-and-apache-on-debian
             NOTICE: a2enconf php7.0-fpm
             NOTICE: You are seeing this message because you have apache2 package installed.        
             
-    apt-get install libapache2-mod-fastcgi
-    a2enmod proxy_fcgi setenvif
-    a2enconf php7.0-fpm
-    a2enmod actions
+    #apt-get install                             libapache2-mod-fastcgi
+    #a2enmod proxy_fcgi setenvif
+    #a2enconf php7.0-fpm
+    #a2enmod actions
     
 Change in conf
     /etc/php/7.0/fpm/pool.d/www.conf
@@ -60,14 +60,14 @@ Set proxypassmatch
     https://www.vincentliefooghe.net/content/configuration-apache-24-php-fpm
     
 Restart php
-    service php7.0-fpm restart
+    #service php7.0-fpm restart
 Restart apache
-    service apache2 restart
+    #service apache2 restart
 Check if php-fpm running
-    ps aux | grep php-fpm
-    netstat -an | grep :9000
-    nmap localhost -p 9000
-    /etc/init.d/php7-fpm status
+    #ps aux | grep php-fpm
+    #netstat -an | grep :9000
+    #nmap localhost -p 9000
+    #/etc/init.d/php7-fpm status
     
 Mapserver http://mapserver.org/fr/installation/unix.html
     
