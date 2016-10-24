@@ -1,0 +1,66 @@
+Common cmd for Git
+
+Update user info
+      git config --global user.name "Solofo"
+      git config --global user.email solofo.ralitera@gmail.com
+      git config --global color.ui auto
+      
+    Réccupérer un dépot (branche master)
+        git clone ssh://git@91.206.XXX.XX/home/git/depotsGit/monprojet.git
+    Lister les branches locales
+        git branch
+    Lister les branches distantes
+        git branch -r
+    Réccupérer une branche distance (dev nom local, origin/dev : branche distante)
+        git checkout -b dev origin/dev
+    Créer une branche locale
+        git branch newbranch
+    Push single branch
+        git push origin feature823        
+    Mettre à jour la branche active
+        git pull
+    Changer de branche
+        git checkout sara2
+    Lister les fichiers à commiter
+        git status
+    Ajouter les fichiers issues de git status
+        git add f1 f2 f3 ....
+    commiter tous les fichiers
+        git commit -a
+    Create remote branche
+        Create local branch
+            git checkout -b newbranch
+        Push new branch to origin
+            git push origin newbranch
+    Commit only somes files
+         git add [some files] # add [some files] to staging area
+         git add [some more files] # add [some more files] to staging area
+         git commit # commit [some files] and [some more files]
+    Untrackfile
+        git update-index --assume-unchanged path/to/file
+        to track again git update-index --no-assume-unchanged path/to/file
+    Annuler modification fichier
+        git checkout -- fichier
+    Git stash
+        git stash .... git stash apply
+    Reset branch (overwrite local file to match depot)
+        git fetch --all
+        git reset --hard origin/your_branch
+            Explanation:
+            git fetch downloads the latest from remote without
+            trying to merge or rebase anything.
+            Then the git reset resets the master branch to what you just fetched.
+            The --hard option changes all the files in your working tree to match
+            the files in origin/master    
+    Delete remote tag
+        git push origin :refs/tags/<tag name>
+    Delete local tag
+        git tag -d <tag name>
+    Delete local branch
+        git branch -d <branch name> or git tag --delete tagname
+        
+    Delete remote TAG (like branch)
+        git push origin :<branch name> ou git push origin --delete <branch name>
+        then git tag --delete tagname
+    Create branch annoted
+        git tag -a 1.03 -m '1.03'
