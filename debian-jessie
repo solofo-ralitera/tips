@@ -15,6 +15,7 @@ Install php
 https://memo-linux.com/debian-8-installer-php7-simplement-avec-les-depots-dotdeb/    
 https://angristan.fr/installer-php-7-debian-8-jessie-depot-dotdeb/
 https://www.linode.com/docs/websites/apache/install-php-fpm-and-apache-on-debian-8
+    #echo "deb http://packages.dotdeb.org jessie all" > /etc/apt/sources.list.d/dotdeb.list
     #wget --no-check-certificate https://www.dotdeb.org/dotdeb.gpg && apt-key add dotdeb.gpg
     #apt update
     #apt install php7.0 php7.0-fpm php7.0-mysql php7.0-curl php7.0-json php7.0-gd php7.0-mcrypt php7.0-msgpack php7.0-memcached php7.0-intl php7.0-sqlite3 php7.0-gmp php7.0-geoip php7.0-mbstring php7.0-xml php7.0-zip php7.0-pgsql
