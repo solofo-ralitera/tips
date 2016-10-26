@@ -61,7 +61,17 @@ Change in conf
                 SetHandler "proxy:fcgi://127.0.0.1:8000"
             </FilesMatch>
         </Directory>    
-    
+    OR load balancer config /etc/apache2/sites-available/000-default.conf
+        #a2enmod proxy_balancer
+        #a2enmod lbmethod_byrequests
+        <Proxy balancer://phpcluster>
+            BalancerMember fcgi://192.168.33.10:9000
+            BalancerMember fcgi://192.168.33.11:9000
+        </Proxy>
+        <FilesMatch \.php$>
+            SetHandler "proxy:balancer://phpcluster"
+        </FilesMatch>    
+        
     To activate headers in apache conf (/etc/apache2/conf-available/php7.0-fpm.conf )
         #a2enmod headers
         Then in conf you can add, to enable cross origin for script for instance
