@@ -64,7 +64,7 @@ Change in conf
     OR load balancer 
         #a2enmod proxy_balancer
         #a2enmod lbmethod_byrequests
-        Set php-fpm listen config to Ip
+        Set php-fpm listen config to Ip. e.g. listen = 192.168.33.10:9000
         Apache config /etc/apache2/sites-available/000-default.conf e.g
             <Proxy balancer://phpcluster>
                 BalancerMember fcgi://192.168.33.10:9000
@@ -73,6 +73,7 @@ Change in conf
             <FilesMatch \.php$>
                 SetHandler "proxy:balancer://phpcluster"
             </FilesMatch>    
+        Clone your files to each cluster, with the same path as the master
         
     To activate headers in apache conf (/etc/apache2/conf-available/php7.0-fpm.conf )
         #a2enmod headers
