@@ -15,6 +15,8 @@ Install php
 https://memo-linux.com/debian-8-installer-php7-simplement-avec-les-depots-dotdeb/    
 https://angristan.fr/installer-php-7-debian-8-jessie-depot-dotdeb/
 https://www.linode.com/docs/websites/apache/install-php-fpm-and-apache-on-debian-8
+
+            // To remove old version #apt-get autoremove --purge php5*
     #echo "deb http://packages.dotdeb.org jessie all" > /etc/apt/sources.list.d/dotdeb.list
     #wget --no-check-certificate https://www.dotdeb.org/dotdeb.gpg && apt-key add dotdeb.gpg
     #apt update
