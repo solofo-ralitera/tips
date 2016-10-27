@@ -169,3 +169,6 @@ Shared folders
             #/etc/init.d/samba restart
     For client
         #apt-get install cifs-utils samba-client autofs
+        Add in /etc/fstab
+            //192.168.33.78/html /var/www/html cifs user,uid=500,suid,username=popolos,password=popolos 0 0
+        #mount -a 
