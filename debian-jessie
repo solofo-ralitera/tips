@@ -141,4 +141,31 @@ Mapserver http://mapserver.org/fr/installation/unix.html
         
     libpq
         #apt-get install libpq-dev
-    
+        
+Shared folders
+    Install samba
+        #apt-get install samba
+    Share folder
+        Edit smb.conf
+            [global]
+            read only = no
+            share modes = yes
+            hosts allow = 192.168.33.
+            ...
+            [html]
+            path = /var/www/html
+            comment = Html
+            force directory mode = 777
+            force create mode = 777
+            writeable = yes
+            browseable = yes
+            valid users = popolos
+            write list = popolos
+        Add user samba
+            #groupadd -g 513 sambausers
+            #useradd -s /bin/false -g sambausers popolos (for samba only)
+            #smbpasswd -a popolos
+            
+            #/etc/init.d/samba restart
+    For client
+        #apt-get install cifs-utils samba-client autofs
