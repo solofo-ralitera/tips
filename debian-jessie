@@ -73,7 +73,7 @@ Change in conf
             <FilesMatch \.php$>
                 SetHandler "proxy:balancer://phpcluster"
             </FilesMatch>    
-        Clone your files to each cluster, with the same path as the master
+        Tips : mount the master www folder on each node (see Shared folder below)
         
     To activate headers in apache conf (/etc/apache2/conf-available/php7.0-fpm.conf )
         #a2enmod headers
@@ -172,3 +172,4 @@ Shared folders
         Add in /etc/fstab
             //192.168.33.78/html /var/www/html cifs user,uid=500,suid,username=popolos,password=popolos 0 0
         #mount -a 
+    Todo right managment
