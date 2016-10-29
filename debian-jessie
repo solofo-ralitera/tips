@@ -81,7 +81,7 @@ Change in conf
             #service memcached restart
             Edit php.ini, set :
                 session.save_handler = memcached
-                session.save_path = 'tcp://192.168.33.10:11211,tcp://192.168.33.11:11211'
+                session.save_path = '192.168.33.10:11211,192.168.33.11:11211'
             Edit /etc/php/7.0/mods-available/memcached.ini, add
                 memcache.allow_failover=1
                 memcache.session_redundancy=3   (3 : node numbrer + 1)
