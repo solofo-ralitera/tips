@@ -74,10 +74,18 @@ Change in conf
                 SetHandler "proxy:balancer://phpcluster"
             </FilesMatch>    
         Tips : mount the master www folder on each node (see Shared folder below)
-        Install memcached
+        Install memcached on each node
             #apt-get install memcached
-        
-        
+            Edit /etc/memcached.conf
+                Change -l 127.0.0.1 to -l 192.168.33.10...
+            #service memcached restart
+            Edit php.ini, set :
+                session.save_handler = memcache
+                session.save_path = 'tcp://192.168.33.10:11211,tcp://192.168.33.11:11211'
+            Edit /etc/php/7.0/mods-available/memcached.ini, add
+                memcache.allow_failover=1
+                memcache.session_redundancy=3   (3 : node numbrer + 1)
+                
     To activate headers in apache conf (/etc/apache2/conf-available/php7.0-fpm.conf )
         #a2enmod headers
         Then in conf you can add, to enable cross origin for script for instance
