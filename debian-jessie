@@ -85,7 +85,8 @@ Change in conf
             Edit /etc/php/7.0/mods-available/memcached.ini, add
                 memcache.allow_failover=1
                 memcache.session_redundancy=3   (3 : node numbrer + 1)
-                
+         See https://www.guillaume-leduc.fr/une-autre-facon-dutiliser-php-fpm.html for process configuration
+         
     To activate headers in apache conf (/etc/apache2/conf-available/php7.0-fpm.conf )
         #a2enmod headers
         Then in conf you can add, to enable cross origin for script for instance
