@@ -74,6 +74,9 @@ Change in conf
                 SetHandler "proxy:balancer://phpcluster"
             </FilesMatch>    
         Tips : mount the master www folder on each node (see Shared folder below)
+        Install memcached
+            #apt-get install memcached
+        
         
     To activate headers in apache conf (/etc/apache2/conf-available/php7.0-fpm.conf )
         #a2enmod headers
