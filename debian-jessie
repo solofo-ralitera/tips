@@ -80,7 +80,7 @@ Change in conf
                 Change -l 127.0.0.1 to -l 192.168.33.10...
             #service memcached restart
             Edit php.ini, set :
-                session.save_handler = memcache
+                session.save_handler = memcached
                 session.save_path = 'tcp://192.168.33.10:11211,tcp://192.168.33.11:11211'
             Edit /etc/php/7.0/mods-available/memcached.ini, add
                 memcache.allow_failover=1
