@@ -4,6 +4,9 @@ Install rabbitMq from official site
     #apt-get update
     #apt-get install rabbitmq-server
 
+Active remote administration (http://192.168.33.10:15672/)
+    #rabbitmq-plugins enable rabbitmq_management
+    
 Steps for clustering (https://sensuapp.org/docs/latest/reference/rabbitmq.html)
 For each nodes 
     Set host name for each node in /etc/host
