@@ -1,0 +1,42 @@
+Install rabbitMq from official site
+    #wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc |  apt-key add -
+        use "wget --no-check-certificate -qO ....." if gpg error (https://debian.fhem.de/trouble.php)
+    #apt-get update
+    #apt-get install rabbitmq-server
+
+Steps for clustering (https://sensuapp.org/docs/latest/reference/rabbitmq.html)
+For each nodes 
+    Set host name for each node in /etc/host
+        192.168.33.10   cluster1
+        192.168.33.11   cluster2
+        ...
+        
+    STOP rabbitMq
+        #/etc/init.d/rabbitmq-server stop
+    
+    Create config file
+        #nano /etc/rabbitmq/rabbitmq.config
+[
+  {rabbit, [
+    {cluster_partition_handling, pause_minority},
+    {loopback_users, []}
+  ]}
+]. 
+
+        {loopback_users, []} is used to allow guest/guest to remotely connect, not a good idea
+
+    Set the same cookie value for each node in /var/lib/rabbitmq/.erlanj.cookie   
+    
+    Restart 
+        #/etc/init.d/rabbitmq-server start
+        #rabbitmqctl stop_app
+        #rabbitmqctl reset
+
+Start one node (cluster1)
+    #rabbitmqctl start_app
+On each other nodes
+    #rabbitmqctl join_cluster rabbit@cluster1
+    #rabbitmqctl start_app
+Check with     
+    #rabbitmqctl cluster_status
+
