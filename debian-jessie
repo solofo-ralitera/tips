@@ -69,6 +69,7 @@ Change in conf
         Set php-fpm listen config to Ip. e.g. listen = 192.168.33.10:9000
         Apache config /etc/apache2/sites-available/000-default.conf e.g
             <Proxy balancer://phpcluster>
+                #see http://httpd.apache.org/docs/2.4/mod/mod_proxy.html for more option (loadfactor, ...)
                 BalancerMember fcgi://192.168.33.10:9000
                 BalancerMember fcgi://192.168.33.11:9000
             </Proxy>
