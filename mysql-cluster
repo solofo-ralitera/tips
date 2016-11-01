@@ -1,0 +1,162 @@
+Prerequisites
+Three Droplets minimum
+- 1 for Cluster manger and server/client (192.168.33.78)
+- 2 got datanodes (192.168.33.10 and 192.168.33.11)
+
+Install MySql Cluster from official site on each nodes
+    #apt-get install libaio1
+    #dpkg -i mysql-cluster-gpl-7.5.4-debian8-x86_64.deb
+
+    Cluster installation is in /opt/mysql/server-5.7/
+    
+
+Cluster Manager
+    #mkdir /opt/mysql/server-5.7/mysql-cluster 
+    #nano /opt/mysql/server-5.7/mysql-cluster/config.ini
+        [ndb_mgmd default]
+        # Management process options:
+        hostname=192.168.33.78  # Hostname of the manager
+        datadir=/opt/mysql/server-5.7/log  # Directory for the log files
+
+        [tcp default]
+        SendBufferMemory=2M
+        ReceiveBufferMemory=2M
+
+        [ndbd default]
+        LockPagesInMainMemory=1
+        DataMemory=2048M
+        IndexMemory=384M
+        ODirect=1
+
+        [ndbd]
+        hostname=192.168.33.10    # Hostname of the first data node
+        datadir=/usr/local/mysql/data   # Remote directory for the data files
+
+        [ndbd]
+        hostname=192.168.33.11    # Hostname of the second data node
+        datadir=/usr/local/mysql/data   # Remote directory for the data files
+
+        [mysqld]
+        # SQL node options:
+        hostname=192.168.33.78  # In our case server/client is on the same Droplet
+
+    Start the manager
+        #/opt/mysql/server-5.7/bin/ndb_mgmd -f /opt/mysql/server-5.7/mysql-cluster/config.ini
+        
+        To enable autostart add this command in /etc/rc.local before the exit line.
+            #systemctl enable rc-local.service
+
+Data Nodes on each datanodes
+    Set the location of the manager
+        #nano /etc/my.cnf
+            [mysql_cluster]
+            ndb-connectstring=192.168.33.78
+    
+    #mkdir -p /usr/local/mysql/data
+    
+    Start the datanode
+        #/opt/mysql/server-5.7/bin/ndbd
+        You shuould have two messages Angel connected / allocated
+
+    Add this command in /etc/rc.local, like above, to autostart
+    
+
+Server / Client
+    #nano /etc/my.cnf
+        [mysqld]
+        ndbcluster
+        ndb-connectstring=192.168.33.78       # IP address for server management node
+        default_storage_engine=ndbcluster     # Define default Storage Engine used by MySQL
+        # set basedir to your installation path
+        basedir=/opt/mysql/server-5.7
+        # set datadir to the location of your data directory
+        datadir=/opt/mysql/server-5.7/data
+        skip-grant-tables # !!!!! skip grant on connection rmove in prod
+
+        [mysql_cluster]
+        ndb-connectstring=192.168.33.78 # IP address for server management node
+        ...
+    
+    Add right
+        #groupadd mysql
+        #useradd -r -g mysql -s /bin/false mysql
+        
+    Install dependencie
+        #apt-get install libnuma-dev
+ 
+    Change permission
+         #cd /opt/mysql/server-5.7/
+        #mkdir data
+        #chown -R root .
+        #chown -R mysql data
+        #chgrp -R mysql . 
+    Initialize directory
+        #bin/mysql_install_db --user=mysql --basedir=/opt/mysql/server-5.7 --datadir=/opt/mysql/server-5.7/data
+    Create dir 
+        #mkdir /var/lib/mysql
+        #mkdir /var/lib/mysql-files
+        #/etc/mysql/conf.d
+
+        #cp /opt/mysql/server-5.7/support-files/mysql.server /etc/init.d/mysqld
+        #update-rc.d mysqld defaults
+        #systemctl enable mysqld
+        #update-rc.d mysqld enable
+            or #systemctl enable mysqld.service
+
+        #systemctl start mysqld
+            or #systemctl status mysqld.service
+    Add link for binary
+        #ln -s /opt/mysql/server-5.6/bin/mysql /usr/bin/
+        
+    Test process running
+        #ps aux | grep mysql
+        #systemctl status mysqld.service
+
+    If error see log in /var/lib/mysql/…err
+    Connect to server
+        #mysql -u root -pmy
+        
+        If Mysql problem access denied
+            Add skip-grant-tables in my.cnf
+            Connect #mysql -u root
+                > UPDATE mysql.user SET authentication_string = PASSWORD('root') WHERE User = 'root' AND Host = 'localhost';
+                > FLUSH PRIVILEGES;
+                > SET PASSWORD FOR 'root'@'%' = PASSWORD('root');
+                > GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+                > SHOW ENGINE NDB STATUS
+        
+Open the management console with the command:
+    #/opt/mysql/server-5.7/bin/ndb_mgm
+    See documentation  online
+    > SHOW
+    > 2 STATUS
+    ....
+
+    When create table use ndbcluster engine 
+        > CREATE TABLE test (name VARCHAR(20), value VARCHAR(20)) ENGINE=ndbcluster;
+    When you are inserting and selecting data like this,
+    you are load-balancing your queries between all the available data node,
+    which are two in our example.
+    With this scaling out you benefit both in terms of stability and performance.
+
+Links
+    http://www.dbnewz.com/2008/07/18/installation-du-mysql-cluster/
+    https://www.digitalocean.com/community/tutorials/how-to-create-a-multi-node-mysql-cluster-on-ubuntu-16-04
+
+
+Useful commands
+START Manager
+    Start manager
+    #/opt/mysql/server-5.7/bin/ndb_mgmd -f /opt/mysql/server-5.7/mysql-cluster/config.ini
+
+Start Nodes
+    #/opt/mysql/server-5.7/bin/ndbd
+
+Start Server/Client
+    #systemctl restart mysqld
+
+More manager config (config.ini)
+    https://dev.mysql.com/doc/mysql-cluster-excerpt/5.1/en/mysql-cluster-config-starting.html
+Managment client cmd
+    https://dev.mysql.com/doc/refman/5.7/en/mysql-cluster-mgm-client-commands.html
+
