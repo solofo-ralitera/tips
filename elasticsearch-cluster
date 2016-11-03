@@ -1,0 +1,9 @@
+Version 5
+https://www.elastic.co/guide/en/elasticsearch/reference/5.0/deb.html
+
+Auto start
+  #/bin/systemctl daemon-reload
+  #/bin/systemctl enable elasticsearch.service
+
+To start service (start/stop/restart)
+  #systemctl start elasticsearch.service
