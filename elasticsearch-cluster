@@ -3,6 +3,8 @@ Version 5
 Install Java
 https://wiki.debian.org/JavaPackage
   #apt-get install java-package
+  #apt-get install libxtst6
+  Su to non route user
   #make-jpkg jdk-8u51-linux-x64.tar.gz 
   (OR TMPDIR=/home/solofo/tmp make-jpkg jdk-8u111-linux-x64.tar.gz) if not enough place
 
