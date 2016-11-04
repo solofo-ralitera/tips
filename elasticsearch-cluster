@@ -1,4 +1,12 @@
 Version 5
+
+Install Java
+https://wiki.debian.org/JavaPackage
+  #apt-get install java-package
+  #make-jpkg jdk-8u51-linux-x64.tar.gz 
+  (OR TMPDIR=/home/solofo/tmp make-jpkg jdk-8u111-linux-x64.tar.gz) if not enough place
+
+
 https://www.elastic.co/guide/en/elasticsearch/reference/5.0/deb.html
 
 Auto start
