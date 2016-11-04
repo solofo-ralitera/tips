@@ -19,10 +19,21 @@ Auto start
   #/bin/systemctl daemon-reload
   #/bin/systemctl enable elasticsearch.service
 
-Config
-  Edit in /etc/elasticsearch/elasticsearch.yml, set :
-    network.host: 192.168.33.10
+Config for cluster
+  For each node : Edit in /etc/elasticsearch/elasticsearch.yml, set :
+    cluster.name: cluster-es
+    node.name: ${HOSTNAME}
+    network.host: 192.168.33.11 ************
     http.port: 9200
+    discovery.zen.ping.unicast.hosts: ["192.168.33.10", "192.168.33.11"]
+  To enable plugin
+    http.cors.enabled: true
+    http.cors.allow-origin: /https?:\/\/.+(:[0-9]+)?/
+    http.cors.allow-credentials: true
+    http.cors.allow-headers: X-Requested-With,X-Auth-Token,Content-Type,Content-Length, Authorization
+  
+    
+    
 To start service (start/stop/restart)
   #systemctl start elasticsearch.service
 Check error
@@ -31,3 +42,7 @@ Enable at startup
   #/bin/systemctl daemon-reload
   #/bin/systemctl enable elasticsearch.service
   
+To check cluster
+  http://192.168.33.10:9200/_cluster/state?pretty
+  
+
