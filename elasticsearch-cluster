@@ -4,16 +4,30 @@ Install Java
 https://wiki.debian.org/JavaPackage
   #apt-get install java-package
   #apt-get install libxtst6
-  Su to non route user
-  #make-jpkg jdk-8u51-linux-x64.tar.gz 
-  (OR TMPDIR=/home/solofo/tmp make-jpkg jdk-8u111-linux-x64.tar.gz) if not enough place
-
-
+  ERREUR Su to non route user
+      #make-jpkg jdk-8u51-linux-x64.tar.gz 
+      (OR TMPDIR=/home/solofo/tmp make-jpkg jdk-8u111-linux-x64.tar.gz) if not enough place
+  Non-alternative
+    Xtract tar.gz to /home/solofo/src/
+    #update-alternatives --install /usr/bin/javac javac /home/solofo/src/jdk1.8.0_111/bin/javac 1500
+    #update-alternatives --install /usr/bin/java java /home/solofo/src/jdk1.8.0_111/bin/java 1500
+    #ulimit -c unlimited
+    
 https://www.elastic.co/guide/en/elasticsearch/reference/5.0/deb.html
 
 Auto start
   #/bin/systemctl daemon-reload
   #/bin/systemctl enable elasticsearch.service
 
+Config
+  Edit in /etc/elasticsearch/elasticsearch.yml, set :
+    network.host: 192.168.33.10
+    http.port: 9200
 To start service (start/stop/restart)
   #systemctl start elasticsearch.service
+Check error
+  #journalctl -f
+Enable at startup
+  #/bin/systemctl daemon-reload
+  #/bin/systemctl enable elasticsearch.service
+  
