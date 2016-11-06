@@ -1,0 +1,189 @@
+/******************************************************/
+INSTALLING A CLUSTER NODE
+- php-fpm 5.6 & 7.0, memcached, php5 mapsript (ms 6.4.1)
+- rabbitmq cluster
+- nodeJs 7.x
+- elasticsearch 5 cluster and java8
+- mysql-cluster-gpl-7.5.4 (Data nodes only)
+- redis 3.2.5, TODO cluster (need odd nodes)
+/******************************************************/
+
+nano /etc/apt/sources.list
+    deb http://httpredir.debian.org/debian jessie main contrib non-free
+    deb-src http://httpredir.debian.org/debian jessie main contrib non-free
+
+    deb http://httpredir.debian.org/debian jessie-updates main contrib non-free
+    deb-src http://httpredir.debian.org/debian jessie-updates main contrib non-free
+
+    deb http://security.debian.org/ jessie/updates main contrib non-free
+    deb-src http://security.debian.org/ jessie/updates main contrib non-free
+    
+apt-get update && apt-get install openssh-server mlocate curl apt-transport-https ca-certificates dos2unix
+
+updatedb
+locate sshd_
+nano /etc/ssh/sshd_config
+    sshd_config : PermitRootLogin yes
+service sshd_restart
+
+
+######################################
+### Copy files to /usr/local/src
+###     cluster-apt-get.sh
+###     jdk-8u111-linux-x64.tar.gz
+###     cluster-apt-get.sh
+###     mysql-cluster-gpl-7.5.4-debian8-x86_64.deb
+###     redis-3.2.5.tar.gz
+######################################
+
+################## EXECUTED IN CLUSTER-APT-GET.SH
+########## cd /usr/local/src
+########## dos2unix cluster-apt-get.sh
+########## chmod 775 cluster-apt-get.sh
+########## ./cluster-apt-get.sh
+########## ndbd
+######################################
+
+echo "deb http://packages.dotdeb.org jessie all" > /etc/apt/sources.list.d/dotdeb.list
+wget --no-check-certificate https://www.dotdeb.org/dotdeb.gpg && apt-key add dotdeb.gpg
+
+echo 'deb http://www.rabbitmq.com/debian/ testing main' | tee /etc/apt/sources.list.d/rabbitmq.list
+wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | apt-key add -
+ 
+curl -sL https://deb.nodesource.com/setup_7.x | bash -
+ 
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
+echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-5.x.list
+
+echo "deb https://apt.dockerproject.org/repo debian-jessie main" > /etc/apt/sources.list.d/docker.list
+apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+
+apt-get update && apt-get install wkhtmltopdf php7.0 php7.0-fpm php7.0-mysql php7.0-curl php7.0-json php7.0-gd php7.0-mcrypt php7.0-msgpack php7.0-memcached php7.0-intl php7.0-sqlite3 php7.0-gmp php7.0-geoip php7.0-mbstring php7.0-xml php7.0-zip php7.0-pgsql php5 php5-fpm php5-mysql php5-curl php5-json php5-gd php5-mcrypt php5-msgpack php5-memcached php5-intl php5-sqlite php5-gmp php5-geoip php5-pgsql gcc make cmake g++ cifs-utils samba-client autofs java-package libxtst6 memcached php5-mapscript git libaio1 libnuma-dev rabbitmq-server nodejs elasticsearch docker-engine chkconfig tcl
+
+######################################
+######################################
+######################################
+######################################
+
+nano /etc/php/7.0/fpm/pool.d/www.conf
+nano /etc/php5/fpm/pool.d/www.conf
+    listen = 192.168.33.10:9000
+    user = 500
+    group = 500
+nano /etc/php5/fpm/php.ini    
+nano /etc/php/7.0/fpm/php.ini    
+    session.save_handler = memcached
+    session.save_path = '192.168.33.10:11211,192.168.33.11:11211'
+    memory_limit = 1024M
+nano /etc/php/7.0/mods-available/memcached.ini
+nano /etc/php5/mods-available/memcached.ini
+    memcache.allow_failover=1
+    memcache.session_redundancy=3
+nano /etc/memcached.conf
+    -l 192.168.33.11
+
+service memcached restart
+service php7.0-fpm restart
+service php5-fpm restart
+
+mkdir /var/www
+mkdir /var/www/html
+
+nano /etc/fstab
+    //192.168.33.77/www /var/www/html cifs user,uid=500,suid,username=popolos,password=popolos 0 0
+mount -a
+
+nano /etc/hosts
+    192.168.33.11   cluster2
+    192.168.33.10   cluster1
+    
+npm install -g nodemon
+
+cd /usr/local/src/
+dpkg -i mysql-cluster-gpl-7.5.4-debian8-x86_64.deb
+nano /etc/my.cnf
+    [mysql_cluster]
+    ndb-connectstring=192.168.33.78
+mkdir -p /usr/local/mysql/data
+ln -s /opt/mysql/server-5.7/bin/ndbd /usr/bin/ndbd
+ln -s /opt/mysql/server-5.7/bin/ndb_mgm /usr/bin/ndb_mgm
+ln -s /opt/mysql/server-5.7/bin/mysql /usr/bin/mysql
+/opt/mysql/server-5.7/bin/ndbd
+nano /etc/rc.local
+    ndbd
+
+rabbitmq-plugins enable rabbitmq_management
+/etc/init.d/rabbitmq-server stop
+nano /etc/rabbitmq/rabbitmq.config
+    [
+      {rabbit, [
+        {cluster_partition_handling, pause_minority},
+        {loopback_users, []}
+      ]}
+    ].
+echo 'popolosrabbitcookie' > /var/lib/rabbitmq/.erlang.cookie
+/etc/init.d/rabbitmq-server start
+rabbitmqctl stop_app
+rabbitmqctl reset
+### On one node only (cluster1)
+###     rabbitmqctl start_app
+###     rabbitmqctl start_app
+### On each other nodes (cluster2)
+###     rabbitmqctl join_cluster rabbit@cluster1
+###     rabbitmqctl start_app
+rabbitmqctl cluster_status
+###     Check in http://192.168.33.10:15672/ (guest/guest)
+###     Check in http://192.168.33.11:15672/ (guest/guest)
+
+cd /usr/local/src/
+tar -xzf jdk-8u111-linux-x64.tar.gz
+update-alternatives --install /usr/bin/javac javac /usr/local/src/jdk1.8.0_111/bin/javac 1500
+update-alternatives --install /usr/bin/java java /usr/local/src/jdk1.8.0_111/bin/java 1500
+ulimit -c unlimited
+apt-get update && apt-get install elasticsearch
+### If error, remove elasticsearch line in /var/lib/dpkg/statoverride
+nano /etc/elasticsearch/elasticsearch.yml
+    cluster.name: cluster-es
+    node.name: ${HOSTNAME}
+    #network.bind_host: 192.168.33.10
+    network.host: 192.168.33.10
+    http.port: 9200
+    discovery.zen.ping.unicast.hosts: ["192.168.33.10", "192.168.33.11"]
+    http.cors.enabled: true
+    http.cors.allow-origin: /https?:\/\/.+(:[0-9]+)?/
+    http.cors.allow-credentials: true
+    http.cors.allow-headers: X-Requested-With,X-Auth-Token,Content-Type,Content-Length, Authorization
+/bin/systemctl daemon-reload
+/bin/systemctl enable elasticsearch.service
+systemctl start elasticsearch.service
+systemctl restart elasticsearch.service
+sysctl -w vm.max_map_count=262144
+### Check error
+###     journalctl -f
+###     /var/log/elasticsearch/
+###     netstat -tupln
+###     http://192.168.33.10:9200/_cluster/state?pretty
+
+cd /usr/local/src/
+tar -xzf redis-3.2.5.tar.gz
+cd redis-3.2.5
+make
+make test
+mkdir /etc/redis
+mkdir /var/redis
+cp utils/redis_init_script /etc/init.d/redis_6379
+cp redis.conf /etc/redis/6379.conf
+mkdir /var/redis/6379
+nano /etc/init.d/redis_6379
+    EXEC=/usr/local/src/redis-3.2.5/src/redis-server
+    CLIEXEC=/usr/local/src/redis-3.2.5/src/redis-cli
+nano /etc/redis/6379.conf
+    bind 192.168.33.11
+    daemonize yes
+    dir /var/redis/6379
+update-rc.d redis_6379 defaults
+/etc/init.d/redis_6379 start
+ln -s /usr/local/src/redis-3.2.5/src/redis-cli /usr/bin/redis-cli
+######## TODO CLUSTER CONFIG need odd nodes #############
+
+
