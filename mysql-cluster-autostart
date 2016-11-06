@@ -1,0 +1,166 @@
+use it as you will, it works though. I just edited a dund script on Redhat Fedora Core 3 
+the configs are for 1 management, 1 db, 2 storage nodes like in the example. 
+do you have the mysql.server script working for you on the db node? it's not working for me, i tried making my own script but mysqld doesnt pass back the info the daemon and killproc functions want so i dont get the [OK] when successfuly starting the process. 
+
+#on management node(s): 
+vi /etc/init.d/ndb_mgmd 
+#copy and paste text further below 
+#note the daemon line in the start section and match to your setup. 
+#i have pasted my config files also for reference 
+cd /etc/init.d 
+chmod +x ndb_mgmd 
+chkconfig --add ndb_mgmd 
+#then you can service ndb_mgmd stop/start/restart... 
+#"service ndb_mgmd stop" first to kill any process running after script install 
+#then "service ndb_mgmd start" 
+
+#on storage node(s): use same notes as above 
+vi /etc/init.d/ndbd 
+cd /etc/init.d 
+chmod +x ndbd 
+chkconfig --add ndbd 
+
+
+***start ndb_mgmd file, do not copy this line*** 
+#!/bin/sh 
+# 
+# ndb_mgmd: MySQL Cluster management node 
+# 
+# chkconfig: 2345 90 20 
+# description: MySQL Cluster Management node 
+# 
+
+# Source function library. 
+. /etc/rc.d/init.d/functions 
+
+start() 
+{ 
+echo -n $"Starting ndb_mgmd: " 
+daemon /usr/bin/ndb_mgmd -f /var/lib/mysql-cluster/config.ini 
+
+touch /var/lock/subsys/ndb_mgmd 
+echo 
+} 
+
+stop() 
+{ 
+echo -n $"Shutting down ndb_mgmd: " 
+killproc ndb_mgmd 
+
+rm -f /var/lock/subsys/ndb_mgmd 
+echo 
+} 
+
+[ -f /usr/bin/ndb_mgmd ] || exit 0 
+
+# See how we were called. 
+case "$1" in 
+start) 
+start 
+;; 
+stop) 
+stop 
+;; 
+restart|reload) 
+stop 
+start 
+;; 
+condrestart) 
+[ -e /var/lock/subsys/ndb_mgmd ] && (stop; start) 
+;; 
+*) 
+echo $"Usage: $0 {start|stop|restart|reload|condrestart}" 
+exit 1 
+esac 
+
+exit 0 
+***end ndb_mgmd file, do not copy this line*** 
+***start ndb_mgmd config file(config.ini), do not copy this line*** 
+# Options affecting ndbd processes on all storage nodes: 
+[NDBD DEFAULT] 
+NoOfReplicas= 2 
+#default values 
+DataMemory= 80M 
+IndexMemory= 52M 
+[NDB_MGMD] 
+Hostname= 192.168.254.51 
+DataDir= /var/lib/mysql-cluster 
+# Options for storage node "A": 
+[NDBD] 
+Hostname= 192.168.254.53 
+DataDir= /usr/local/mysql/data 
+# Options for storage node "B": 
+[NDBD] 
+Hostname= 192.168.254.54 
+DataDir= /usr/local/mysql/data 
+# SQL node options 
+[MYSQLD] 
+Hostname= 192.168.254.52 
+***end ndb_mgmd config file(config.ini), do not copy this line*** 
+***Start ndbd file, do not copy this line*** 
+#!/bin/sh 
+# 
+# ndbd: MySQL Cluster Storage node 
+# 
+# chkconfig: 2345 90 20 
+# description: MySQL Cluster Storage node 
+# 
+
+
+# Source function library. 
+. /etc/rc.d/init.d/functions 
+
+start() 
+{ 
+echo -n $"Starting ndbd: " 
+daemon /usr/local/mysql/bin/ndbd 
+
+touch /var/lock/subsys/ndbd 
+echo 
+} 
+
+stop() 
+{ 
+echo -n $"Shutting down ndbd: " 
+killproc ndbd 
+
+rm -f /var/lock/subsys/ndbd 
+echo 
+} 
+
+
+[ -f /usr/local/mysql/bin/ndbd ] || exit 0 
+
+# See how we were called. 
+case "$1" in 
+start) 
+start 
+;; 
+stop) 
+stop 
+;; 
+restart|reload) 
+stop 
+start 
+;; 
+condrestart) 
+[ -e /var/lock/subsys/ndbd ] && (stop; start) 
+;; 
+*) 
+echo $"Usage: $0 {start|stop|restart|reload|condrestart}" 
+exit 1 
+esac 
+
+exit 0 
+***end ndbd file, do not copy this line*** 
+***Start ndbd config file(my.cnf), do not copy this line*** 
+[MYSQLD] 
+ndbcluster 
+ndb-connectstring=192.168.254.51 
+[MYSQL_CLUSTER] 
+ndb-connectstring=192.168.254.51 
+[ndbd] 
+connect-string=192.168.254.51 
+[ndb_mgmd] 
+config-file=/var/lib/mysql-cluster/config.ini 
+***end ndbd config file(my.cnf), do not copy this line***
