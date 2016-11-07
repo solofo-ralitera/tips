@@ -90,6 +90,13 @@ Change in conf
                 memcache.session_redundancy=3   (3 : node numbrer + 1)
          See https://www.guillaume-leduc.fr/une-autre-facon-dutiliser-php-fpm.html for process configuration
          
+    Edit /etc/php5/fpm/pool.d/www.conf
+        php_admin_value[display_errors] = E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE
+        php_flag[display_errors] = on
+        php_flag[display_startup_errors] = on
+        php_admin_flag[log_errors] = on
+        php_admin_value[memory_limit] = 512M
+
     To activate headers in apache conf, useful if used as cdn server
         #a2enmod headers
         Then in conf /etc/apache2/conf-available/php7.0-fpm.conf you can add, to enable cross origin for script for instance
