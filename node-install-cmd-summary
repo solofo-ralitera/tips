@@ -34,6 +34,7 @@ service sshd_restart
 ###     cluster-apt-get.sh
 ###     mysql-cluster-gpl-7.5.4-debian8-x86_64.deb
 ###     redis-3.2.5.tar.gz
+###     imagick-3.4.0.tgz
 ######################################
 
 ################## EXECUTED IN CLUSTER-APT-GET.SH
@@ -99,7 +100,6 @@ service php5-fpm restart
 ######################################
 apt-get install pkg-config libmagickwand-dev -y
 cd /usr/local/src
-wget https://pecl.php.net/get/imagick-3.4.0.tgz
 tar xvzf imagick-3.4.0.tgz
 cd imagick-3.4.0
 phpize
