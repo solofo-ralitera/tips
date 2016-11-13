@@ -105,7 +105,6 @@ cd imagick-3.4.0
 phpize
 ./configure
 make install
-rm -rf /tmp/imagick-3.4.0*
 echo extension=imagick.so >> /etc/php/7.0/cli/php.ini
 echo extension=imagick.so >> /etc/php/7.0/fpm/php.ini
 ######################################
