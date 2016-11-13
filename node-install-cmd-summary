@@ -102,7 +102,7 @@ apt-get install pkg-config libmagickwand-dev -y
 cd /usr/local/src
 tar xvzf imagick-3.4.0.tgz
 cd imagick-3.4.0
-phpize
+/usr/bin/phpize7.0
 ./configure
 make install
 echo extension=imagick.so >> /etc/php/7.0/cli/php.ini
