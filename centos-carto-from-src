@@ -1,0 +1,49 @@
+#cd php-5.5.4
+#./configure --prefix=/usr/local/apache2/ --with-apxs2=/usr/local/apache2/bin/apxs --with-config-file-path=/usr/local/apache2/php/ --with-regex=system --with-jpeg-dir=/usr --with-png-dir=/usr --with-zlib --with-gd --with-freetype-dir=/usr/local/ --enable-gd-native-ttf --disable-cgi --enable-mbstring --with-pgsql=/usr/local/pgsql/bin/pg_config --with-pdo-pgsql=/usr/local/pgsql/bin/pg_config --with-pear --with-mcrypt --with-mysqli 
+#make
+#make install
+#echo -e "AddType application/x-httpd-php .php .php5 .phtml\nAddType application/x-httpd-php-source .phps">>/usr/local/apache2/conf/httpd.conf
+#cp php.ini-development /usr/local/apache2/php/php.ini
+
+#cd cmake-3.7.1
+#./bootstrap
+#make
+#make install
+
+        ////////// plouf
+        #cd mapserver-6.4.4
+        #mkdir build
+        #cd build
+        cmake -DCMAKE_INSTALL_PREFIX=/opt \
+                -DCMAKE_PREFIX_PATH="/usr/local/pgsql;/usr/local/pgsql/lib;/usr/local/pgsql/bin;/usr/local;/opt;/usr/local/apache2/include/php/main" \
+                -DWITH_FRIBIDI=0 \
+                -DWITH_CAIRO=0 \
+                -DWITH_FCGI=0 \
+                -DWITH_GIF=0 \
+                -DWITH_POSTGIS=ON \
+                -DWITH_CLIENT_WFS=ON \
+                -DWITH_CLIENT_WMS=ON \
+                -DWITH_CURL=ON \
+                -DWITH_PHP=ON \
+                -DWITH_HARFBUZZ=0 \
+                -DPHP5_EXTENSION_DIR="/usr/local/apache2/php/ext" \
+                ../ >../configure.out.txt
+        #find / -name php.h
+     
+#cd agg-2.5
+#make
+#make isntall
+
+#cd mapserver-6.2.3
+#./configure --without-eppl --with-threads --with-proj --with-gdal=/usr/local/bin/gdal-config --with-ogr --with-php=/usr/local/apache2/bin/php-config --with-freetype=/usr/local/bin  --with-pdf --with-wmsclient --with-wfs --with-wfsclient --with-geos --with-postgis=/usr/local/pgsql/bin/pg_config --with-httpd=/usr/local/apache2/bin/httpd --with-agg=/usr/local/src/agg-2.5 --without-gif
+        //// Add in error.c after include
+         #undef ZVAL_STRING
+         #define ZVAL_STRING(z, s, duplicate) do {       \
+                         const char *__s=(s);                            \
+                         zval *__z = (z);                                        \
+                         Z_STRLEN_P(__z) = strlen(__s);          \
+                         Z_STRVAL_P(__z) = (duplicate?estrndup(__s, Z_STRLEN_P(__z)):(char*)__s);\
+                         Z_TYPE_P(__z) = IS_STRING;                      \
+                 } while (0)
+#find / -name php_mapscript.so
+    /usr/local/apache2/lib/php/extensions/no-debug-zts-20121212/php_mapscript.so
