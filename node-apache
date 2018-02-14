@@ -1,2 +1,22 @@
 Hosting nodejs within apache
 
+#a2enmod proxy
+#a2enmod proxy_http
+
+Conf apache (site-available) dans <VirtualHost *:80>
+   <Directory />
+      Options -Indexes +FollowSymLinks
+      AllowOverride None
+      Require all granted
+   </Directory>
+   ProxyRequests Off
+   ProxyPreserveHost On
+   ProxyVia Full
+   <Proxy *>
+      Require all granted
+   </Proxy>
+   <Location /slf>
+      ProxyPass http://127.0.0.1:4567
+      ProxyPassReverse http://1127.0.0.1:4567
+   </Location>
+/slf est redirigé vers le service http://127.0.0.1:4567
