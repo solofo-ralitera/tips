@@ -40,3 +40,4 @@ Conf apache (site-available) dans <VirtualHost *:80>
 #        RewriteRule ^/.* - [F]
 #        ProxyPreserveHost On
 </VirtualHost>
+//https://askubuntu.com/questions/463618/setting-up-subdomain-on-ubuntu-server
