@@ -20,3 +20,23 @@ Conf apache (site-available) dans <VirtualHost *:80>
       ProxyPassReverse http://1127.0.0.1:4567
    </Location>
 /slf est redirigé vers le service http://127.0.0.1:4567
+
+
+
+<VirtualHost *:443>
+    ServerName xx.xxx.xx.xx
+    DocumentRoot "/var/www/html/default"
+    ServerAdmin webmaster@xxx.fr
+
+	# Set up SSL to work with this host
+    SSLEngine On
+    SSLCertificateFile /etc/httpd/cert/xxx.com.crt
+    SSLCertificateKeyFile /etc/httpd/cert/xxx.com.key
+    SSLCACertificateFile /etc/httpd/cert/GeoTrust_SSL_CA_G3_Cert_bundle.pem
+
+#        RewriteEngine On
+#        RewriteRule ^/[^?]*\.\..* - [F]
+#        RewriteRule ^/(.*) http://www.xxx.com/  [R=301,L]
+#        RewriteRule ^/.* - [F]
+#        ProxyPreserveHost On
+</VirtualHost>
