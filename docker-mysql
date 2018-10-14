@@ -1,4 +1,4 @@
-<<<<<<<<<<< Docker file mysql: mysql.yml
+<<<<<<<<<<< Docker compose mysql: mysql.yml
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # Use root/example as user/password credentials
 # CREATE USER 'user'@'%' IDENTIFIED BY 'user';
@@ -62,3 +62,24 @@ pid-file=/var/run/mysqld/mysqld.pid
 
 # Accept connections from any IP address
 bind-address=0.0.0.0
+
+
+<<<<<<<<<<< Docker compose postgresql
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# Postgresql
+version: '3.1'
+
+services:
+  postgresql:
+    image: mdillon/postgis
+    restart: always
+    expose:
+      - '5432'
+    environment:
+      POSTGRES_PASSWORD: pg
+    ports:
+      - 5432:5432
+    volumes:
+      # Specify an absolute path mapping
+      - /var/lib/postgresql/data:/var/lib/postgresql
+
