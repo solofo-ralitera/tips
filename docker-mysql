@@ -81,5 +81,5 @@ services:
       - 5432:5432
     volumes:
       # Specify an absolute path mapping
-      - /var/lib/postgresql/data:/var/lib/postgresql
+      - /var/lib/postgresql/data:/var/lib/postgresql/data
 
