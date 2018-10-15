@@ -84,3 +84,22 @@ services:
       - /var/lib/postgresql/db:/var/lib/postgresql
       - /var/lib/postgresql/data:/var/lib/postgresql/data
 
+
+
+
+<<<<<<<<<<< Docker compose php apache
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+version: '3.1'
+
+services:
+  apache_php:
+    image: php:7.2-apache
+    restart: always
+    expose:
+      - '80'
+    ports:
+      - 80:80
+    volumes:
+      # Specify an absolute path mapping
+      - /var/www/html:/var/www/html
+
