@@ -1,0 +1,17 @@
+# Php
+version: '3.1'
+
+services:
+  apache_php:
+    build:
+      context: .
+      dockerfile: php7.2-extensions
+    #image: php:7-fpm
+    restart: always
+    expose:
+      - '80'
+    ports:
+      - 80:80
+    volumes:
+      # Specify an absolute path mapping
+      - /var/www/html:/var/www/html
