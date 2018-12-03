@@ -25,6 +25,19 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
 
+  mongodb:
+    image: mongo:4.0
+    restart: always
+    expose:
+      - '27017'
+    ports:
+      - 27017:27017    
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - /var/lib/mongodb:/data/db
+
   apache_php:
     build:
       context: ../docker
@@ -32,11 +45,11 @@ services:
     depends_on:
       - postgresql
       - mysql
+      - mongodb
     restart: always
     expose:
       - '80'
     ports:
       - 80:80
     volumes:
-      # Specify an absolute path mapping
       - ./../www:/var/www/html
