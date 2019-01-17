@@ -1,4 +1,4 @@
-a2enmod proxy_htm
+a2enmod proxy_html
 
 <VirtualHost *:80>
   ...
