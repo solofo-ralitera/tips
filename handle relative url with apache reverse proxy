@@ -1,0 +1,26 @@
+a2enmod proxy_htm
+
+<VirtualHost *:80>
+  ...
+  
+  ProxyRequests Off
+  ProxyPreserveHost On
+  ProxyVia Full
+  
+  <Location /redmine>
+    RewriteEngine On
+
+    RewriteCond %{HTTP:Upgrade} =websocket [NC]
+    RewriteRule /(.*)           ws://127.0.0.1:8080/$1 [P,L]
+    RewriteCond %{HTTP:Upgrade} !=websocket [NC]
+    RewriteRule ^/(.*)           http://127.0.0.1:8080/$1 [P,L]
+
+    ProxyPass http://127.0.0.1:8080
+    ProxyPassReverse http://127.0.0.1:8080
+    ProxyHTMLEnable On
+    ProxyHTMLURLMap  /  /redmine/
+  </Location>
+</VirtualHost>
+
+The key is ProxyHTMLEnable and ProxyHTMLURLMap
+cf: https://serverfault.com/questions/561892/how-to-handle-relative-urls-correctly-with-a-reverse-proxy/561897
