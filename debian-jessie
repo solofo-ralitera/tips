@@ -40,6 +40,7 @@ https://www.linode.com/docs/websites/apache/install-php-fpm-and-apache-on-debian
     #a2enmod proxy_fcgi setenvif
     #a2enconf php7.0-fpm
     #a2enmod actions
+    #a2enmod proxy_wstunnel proxy ssl proxy_http
     
 Change in conf
     /etc/php/7.0/fpm/pool.d/www.conf
